@@ -48,7 +48,21 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
-        return ({},False)
+        assignments = {}
+        
+        # manualy propogate assignments using same methodology as get modified constraints
+        
+        moddedConstraints = self.network.getModifiedConstraints()
+
+        # do constraint propogation of neighbor variables within modded constraints (?)
+        # making sure to set Modified to False
+
+        # if domain becomes 1: trail.push and assign
+        # add to assignments dict
+
+        return (assignments, self.assignmentsCheck())
+        
+
 
     # =================================================================
 	# Arc Consistency
@@ -254,3 +268,37 @@ class BTSolver:
 
     def getSolution ( self ):
         return self.network.toSudokuBoard(self.gameboard.p, self.gameboard.q)
+
+
+"""
+    We thought we had to do Backtracking, whoops
+    def _forwardCheck(self, assignments: dict):
+        # check completeness, if complete return
+        completeAssignment = False
+        
+        if(completeAssignment):
+            isComplete = True 
+            for var in assignments:
+                if(var.isAssigned()):
+
+        if(False):
+            return (assignments, True)
+
+        # else
+        var = self.selectNextVariable(self)
+        for val in self.getNextValues(var):
+            # assign value?
+            isConsistent = self.assignmentsCheck()
+            if(isConsistent):
+                #
+                if ():
+                    # assign variable officially
+                    # eliminate value from neighbors
+                    return self._forwardCheck(assignments)
+            
+            else:
+                
+                return
+        
+        return (assignments, False)
+"""
