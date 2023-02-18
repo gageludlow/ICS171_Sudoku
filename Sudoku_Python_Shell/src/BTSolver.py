@@ -48,19 +48,30 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
-        assignments = {}
+        modified = {}
         
-        # manualy propogate assignments using same methodology as get modified constraints
-        
-        moddedConstraints = self.network.getModifiedConstraints()
+        # fill assignments dict and keep track of which variables were modified in solve()
+        trailIndex = self.trail.size()
+        selectedVar = self.trail.trailStack[trailIndex]
+        selectedVal = selectedVar[0].getValues()[0] 
 
         # do constraint propogation of neighbor variables within modded constraints (?)
         # making sure to set Modified to False
+        neighborVars = self.network.getNeighborsOfVariable(selectedVar[0])
+        for v in neighborVars:
+            if v.getDomain().contains(selectedVal):
+                self.trail.push(v)
+                v.removeValueFromDomain(selectedVal)
+                
+                # if domain becomes 1: trail.push and assign
+                # add to assignments dict
+                if v.getDomain().size() == 1:
+                    v.assignValue(v.getValues()[0])
+                modified[v] = v.getDomain()
 
-        # if domain becomes 1: trail.push and assign
-        # add to assignments dict
+        
 
-        return (assignments, self.assignmentsCheck())
+        return (modified, self.assignmentsCheck())
         
 
 
