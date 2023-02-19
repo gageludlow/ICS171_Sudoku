@@ -51,23 +51,39 @@ class BTSolver:
         modified = {}
         
         # fill assignments dict and keep track of which variables were modified in solve()
-        trailIndex = self.trail.size()
-        selectedVar = self.trail.trailStack[trailIndex]
-        selectedVal = selectedVar[0].getValues()[0] 
+        # trailIndex = self.trail.size()
+        # print(trailIndex)
+        # print(self.trail.trailStack)
+        # print(self.trail.getPushCount())
+
+        # selectedVar = self.trail.trailStack[trailIndex-1]
+        # selectedVal = selectedVar[0].getValues()[0] 
 
         # do constraint propogation of neighbor variables within modded constraints (?)
         # making sure to set Modified to False
-        neighborVars = self.network.getNeighborsOfVariable(selectedVar[0])
-        for v in neighborVars:
-            if v.getDomain().contains(selectedVal):
-                self.trail.push(v)
-                v.removeValueFromDomain(selectedVal)
-                
-                # if domain becomes 1: trail.push and assign
-                # add to assignments dict
-                if v.getDomain().size() == 1:
-                    v.assignValue(v.getValues()[0])
-                modified[v] = v.getDomain()
+
+        moddedConstrs = self.network.getModifiedConstraints()
+
+        for c in moddedConstrs:
+            for v in c.vars:
+                if v.isAssigned():
+                    selectedVar = v
+                    selectedVal = v.getAssignment()
+
+
+
+
+                    neighborVars = self.network.getNeighborsOfVariable(selectedVar)
+                    for nv in neighborVars:
+                        if nv.getDomain().contains(selectedVal) and not nv.isAssigned():
+                            self.trail.push(nv)
+                            nv.removeValueFromDomain(selectedVal)
+                            
+                            # if domain becomes 1: trail.push and assign
+                            # add to assignments dict
+                            if nv.getDomain().size() == 1:
+                                nv.assignValue(nv.getValues()[0])
+                            modified[nv] = nv.getDomain()
 
         
 
@@ -221,6 +237,9 @@ class BTSolver:
             # Store place in trail and push variable's state on trail
             self.trail.placeTrailMarker()
             self.trail.push( v )
+            # print(self.trail.trailStack)
+            # print(self.trail.getPushCount())
+            # print("test")
 
             # Assign the value
             v.assignValue( i )
