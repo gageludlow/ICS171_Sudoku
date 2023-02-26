@@ -70,9 +70,6 @@ class BTSolver:
                     selectedVar = v
                     selectedVal = v.getAssignment()
 
-
-
-
                     neighborVars = self.network.getNeighborsOfVariable(selectedVar)
                     for nv in neighborVars:
                         if nv.getDomain().contains(selectedVal) and not nv.isAssigned():
@@ -84,8 +81,7 @@ class BTSolver:
                             if nv.getDomain().size() == 1:
                                 nv.assignValue(nv.getValues()[0])
                             modified[nv] = nv.getDomain()
-
-        
+ 
 
         return (modified, self.assignmentsCheck())
         
@@ -158,7 +154,21 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        return None
+        
+        mV = None
+        
+        for v in self.network.variables:
+            
+            if not v.isAssigned():
+                
+                if mV == None:
+                    mV = v
+                
+                else:
+                    if mV.size() >= v.size():
+                        mV = v
+
+        return mV
 
     """
         Part 2 TODO: Implement the Minimum Remaining Value Heuristic
