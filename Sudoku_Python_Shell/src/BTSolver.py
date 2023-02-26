@@ -179,7 +179,42 @@ class BTSolver:
                 If there is only one variable, return the list of size 1 containing that variable.
     """
     def MRVwithTieBreaker ( self ):
-        return None
+        mV = None
+        mVList = [None]
+        for v in self.network.variables:
+            
+            if not v.isAssigned():
+                
+                if mV == None:
+                    mV = v
+                    mVList = [mV]
+                else:
+                    if mV.size() > v.size():
+                        mV = v
+                        mVList = [mV]
+
+                    elif mV.size() == v.size():
+                        mVNeighbors = self.network.getNeighborsOfVariable(mV)
+                        vNeighbors = self.network.getNeighborsOfVariable(v)
+                        mVUnassignedNeighbors = 0
+                        vUnassignedNeighbors = 0
+                        
+                        for nv in mVNeighbors:
+                            if not nv.isAssigned():
+                                mVUnassignedNeighbors+=1
+                        
+                        for nv in vNeighbors:
+                            if not nv.isAssigned():
+                                vUnassignedNeighbors+=1
+
+                        if mVUnassignedNeighbors < vUnassignedNeighbors:
+                            mV = v
+                            mVList = [mV]
+                        
+                        elif mVUnassignedNeighbors == vUnassignedNeighbors:
+                            mVList.append(v)
+
+        return mVList
 
     """
          Optional TODO: Implement your own advanced Variable Heuristic
