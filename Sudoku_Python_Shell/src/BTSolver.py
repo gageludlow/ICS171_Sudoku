@@ -128,7 +128,7 @@ class BTSolver:
         FC = self.forwardChecking()
         
         norvigDict = {}
-        for var in FC[0].keys:
+        for var in FC[0].keys():
             if var.isAssigned():
                 norvigDict[var] = var.getAssignment()
         
@@ -139,11 +139,11 @@ class BTSolver:
             countDict = defaultdict(int)
             
             for var in constraint.vars:
-                for val in var.getDomain():
+                for val in var.getDomain().values:
                     countDict[val] += 1
             
-            for val, count in countDict:
-                if count == 1:
+            for val in countDict.keys():
+                if countDict[val] == 1:
                     for var in constraint.vars:
                         if var.getDomain().contains(val):
                             self.trail.push(var)
