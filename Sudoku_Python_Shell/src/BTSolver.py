@@ -145,7 +145,7 @@ class BTSolver:
             for val in countDict.keys():
                 if countDict[val] == 1:
                     for var in constraint.vars:
-                        if var.getDomain().contains(val):
+                        if var.getDomain().contains(val) and not var.isAssigned():
                             self.trail.push(var)
                             var.assignValue(val)
                             norvigDict[var] = val
