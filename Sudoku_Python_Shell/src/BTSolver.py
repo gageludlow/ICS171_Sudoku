@@ -6,6 +6,7 @@ import Constraint
 import ConstraintNetwork
 import time
 import random
+from collections import defaultdict
 
 class BTSolver:
 
@@ -124,7 +125,32 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def norvigCheck ( self ):
-        return ({}, False)
+        FC = self.forwardChecking()
+        
+        norvigDict = {}
+        for var in FC[0].keys:
+            if var.isAssigned():
+                norvigDict[var] = var.getAssignment()
+        
+        if FC[1] == False:
+                return (norvigDict, False)
+        
+        for constraint in self.network.constraints:
+            countDict = defaultdict(int)
+            
+            for var in constraint.vars:
+                for val in var.getDomain():
+                    countDict[val] += 1
+            
+            for val, count in countDict:
+                if count == 1:
+                    for var in constraint.vars:
+                        if var.getDomain().contains(val):
+                            self.trail.push(var)
+                            var.assignValue(val)
+                            norvigDict[var] = val
+
+        return (norvigDict, self.assignmentsCheck())
 
     """
          Optional TODO: Implement your own advanced Constraint Propagation
