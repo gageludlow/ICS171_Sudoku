@@ -74,12 +74,12 @@ class BTSolver:
                     neighborVars = self.network.getNeighborsOfVariable(selectedVar)
                     for nv in neighborVars:
                         if nv.getDomain().contains(selectedVal) and not nv.isAssigned():
-                            self.trail.push(nv)
                             nv.removeValueFromDomain(selectedVal)
                             
                             # if domain becomes 1: trail.push and assign
                             # add to assignments dict
                             if nv.getDomain().size() == 1:
+                                self.trail.push(nv)
                                 nv.assignValue(nv.getValues()[0])
                             modified[nv] = nv.getDomain()
  
